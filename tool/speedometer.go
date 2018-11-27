@@ -74,8 +74,8 @@ func (s *Speedometer) processingStatics() {
 
 	usedTime := now - s.startTime
 	if usedTime != 0 {
-		speed := s.processed / usedTime
-		msg += join("speed", strconv.FormatInt(speed, 10))
+		speed := calSpeed(s.processed, usedTime)
+		msg += join("speed", speed)
 		if s.total != 0 {
 			leftNum := s.total - s.processed - s.processedBefore
 			s.xl.Debug(s.processed, usedTime, leftNum)
@@ -100,10 +100,15 @@ func (s *Speedometer) overallStatics() {
 	msg += join("use time", humanTime(t))
 
 	if t != 0 {
-		speed := s.processed / t // ns 不可能为0
-		msg += join("speed", strconv.FormatInt(speed, 10))
+		speed := calSpeed(s.processed, t)
+		msg += join("speed", speed)
 	}
 	output(s.xl, msg)
+}
+
+func calSpeed(num int64, t int64) string {
+	speed := float64(num) / float64(t)
+	return strconv.FormatFloat(speed, 'f', 2, 64)
 }
 
 func (s *Speedometer) outputCheck() {

@@ -29,11 +29,16 @@ type ProducerConsumer struct {
 
 func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *ProducerConsumer, err error) {
 
+	buf := make(chan Entry, num)
+	fail := make(chan struct{})
 	p = &ProducerConsumer{
 		xl:          xlog.NewWith("ProducerConsumer"),
 		produceFunc: produce,
 		consumeFunc: consume,
 		consumerNum: num,
+
+		buf:  buf,
+		fail: fail,
 	}
 	return
 }
