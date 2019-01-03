@@ -9,9 +9,10 @@ import (
 	"strconv"
 	"sync"
 
+	"qiniu.com/kodo/somewan/utils"
+	"qiniu.com/kodo/somewan/utils/tool"
+
 	"github.com/qiniu/xlog.v1"
-	"somewan.com/utils"
-	"somewan.com/utils/tool"
 )
 
 // ErrFinished is an error flag that indicates the end of producing

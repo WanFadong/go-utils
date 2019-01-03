@@ -20,7 +20,7 @@ func TransferToCrc32EncodedFile(dstFile string, srcFile string) error {
 		return err
 	}
 
-	enc := crc32util.SimpleEncoder(src, nil)
+	enc := crc32util.NewSimpleDecoder(src, nil)
 	n, err := io.Copy(dst, enc)
 	log.Infof("file size: %v", n)
 	return err

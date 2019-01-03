@@ -6,10 +6,11 @@ import (
 
 	"path/filepath"
 
+	"qiniu.com/kodo/somewan/utils/tool"
+
 	"github.com/golib/assert"
 	"github.com/qiniu/xlog.v1"
 	"qbox.us/errors"
-	"somewan.com/utils/tool"
 )
 
 var (
