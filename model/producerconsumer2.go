@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/qiniu/xlog.v1"
@@ -29,6 +30,11 @@ type ProducerConsumer struct {
 
 func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *ProducerConsumer, err error) {
 
+	if num <= 0 {
+		err = errors.New("invalid consumer number")
+		return
+	}
+
 	buf := make(chan Entry, num)
 	fail := make(chan struct{})
 	p = &ProducerConsumer{
@@ -43,24 +49,37 @@ func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *
 	return
 }
 
-func (p *ProducerConsumer) Run() {
+func (p *ProducerConsumer) Run() error {
 	wg := sync.WaitGroup{}
 	wg.Add(1 + p.consumerNum)
 
+	var produceErr error
 	go func() {
 		defer wg.Done()
-		p.doProduce()
+		produceErr = p.doProduce()
 	}()
 
+	consumeErrs := make([]error, p.consumerNum)
 	for i := 0; i < p.consumerNum; i++ {
 		go func(i int) {
 			defer wg.Done()
-			p.doConsume(i)
+			consumeErrs[i] = p.doConsume(i)
 		}(i)
 	}
 
 	wg.Wait()
 
+	if produceErr != nil {
+		return produceErr
+	}
+
+	for _, consumeErr := range consumeErrs {
+		if consumeErr != nil {
+			return consumeErr
+		}
+	}
+
+	return nil
 }
 
 func (p *ProducerConsumer) doProduce() error {
@@ -70,11 +89,12 @@ func (p *ProducerConsumer) doProduce() error {
 			if err == ErrFinished {
 				p.xl.Info("produce finished, producer exit")
 				close(p.buf)
+				return nil
 			} else {
 				p.xl.Error("produce failed, producer exit", err)
 				closeChanSafely(p.fail)
+				return err
 			}
-			return err
 		}
 
 		select {
