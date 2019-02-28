@@ -49,6 +49,11 @@ func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *
 	return
 }
 
+// 查看缓冲区状态
+func (p *ProducerConsumer) BufferStatus() int {
+	return len(p.buf)
+}
+
 func (p *ProducerConsumer) Run() error {
 	wg := sync.WaitGroup{}
 	wg.Add(1 + p.consumerNum)
@@ -102,7 +107,7 @@ func (p *ProducerConsumer) doProduce() error {
 			p.xl.Info("producer/consumer failed, producer exit")
 			return nil
 		case p.buf <- entry:
-			p.xl.Debugf("produce entry", entry)
+			p.xl.Debug("produce entry", entry)
 		}
 	}
 }
