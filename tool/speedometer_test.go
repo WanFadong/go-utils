@@ -7,7 +7,7 @@ import (
 
 	"os"
 
-	"github.com/qiniu/xlog.v1"
+	xlog "github.com/sirupsen/logrus"
 )
 
 var (

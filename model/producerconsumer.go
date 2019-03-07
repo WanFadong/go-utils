@@ -8,11 +8,9 @@ import (
 	"os"
 	"strconv"
 	"sync"
-
-	"qiniu.com/kodo/somewan/utils"
-	"qiniu.com/kodo/somewan/utils/tool"
-
-	"github.com/qiniu/xlog.v1"
+	"github.com/wanfadong/utils"
+	"github.com/wanfadong/utils/tool"
+	xlog "github.com/sirupsen/logrus"
 )
 
 // ErrFinished is an error flag that indicates the end of producing

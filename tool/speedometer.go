@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/qiniu/xlog.v1"
+	xlog "github.com/sirupsen/logrus"
 )
 
 // SpeedometerConfig is Speedometer Config

@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/qiniu/log.v1"
-	"github.com/qiniu/xlog.v1"
+	log "github.com/sirupsen/logrus"
+	xlog "github.com/sirupsen/logrus"
 )
 
 // 打开或新建一个文件，用于读写（使用追加的方式）

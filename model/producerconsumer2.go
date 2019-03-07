@@ -2,9 +2,10 @@ package model
 
 import (
 	"errors"
+	"github.com/wanfadong/utils"
 	"sync"
 
-	"github.com/qiniu/xlog.v1"
+	"github.com/sirupsen/logrus"
 )
 
 /*
@@ -18,7 +19,7 @@ type ProduceFunc func() (Entry, error)
 type ConsumeFunc func(Entry) error
 
 type ProducerConsumer struct {
-	xl *xlog.Logger
+	l *logrus.Entry
 
 	produceFunc ProduceFunc
 	consumeFunc ConsumeFunc
@@ -38,7 +39,7 @@ func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *
 	buf := make(chan Entry, num)
 	fail := make(chan struct{})
 	p = &ProducerConsumer{
-		xl:          xlog.NewWith("ProducerConsumer"),
+		l:           logrus.WithField(utils.ReqidKey, "ProducerConsumer"),
 		produceFunc: produce,
 		consumeFunc: consume,
 		consumerNum: num,
@@ -92,11 +93,11 @@ func (p *ProducerConsumer) doProduce() error {
 		entry, err := p.produceFunc()
 		if err != nil {
 			if err == ErrFinished {
-				p.xl.Info("produce finished, producer exit")
+				p.l.Info("produce finished, producer exit")
 				close(p.buf)
 				return nil
 			} else {
-				p.xl.Error("produce failed, producer exit", err)
+				p.l.Error("produce failed, producer exit", err)
 				closeChanSafely(p.fail)
 				return err
 			}
@@ -104,10 +105,10 @@ func (p *ProducerConsumer) doProduce() error {
 
 		select {
 		case <-p.fail:
-			p.xl.Info("producer/consumer failed, producer exit")
+			p.l.Info("producer/consumer failed, producer exit")
 			return nil
 		case p.buf <- entry:
-			p.xl.Debug("produce entry", entry)
+			p.l.Debug("produce entry", entry)
 		}
 	}
 }
@@ -116,17 +117,17 @@ func (p *ProducerConsumer) doConsume(index int) error {
 	for {
 		select {
 		case <-p.fail:
-			p.xl.Infof("producer/consumer failed, consumer %v exit", index)
+			p.l.Infof("producer/consumer failed, consumer %v exit", index)
 			return nil
 		case entry, ok := <-p.buf:
 			if !ok {
-				p.xl.Infof("produce finished, consumer %v exit", index)
+				p.l.Infof("produce finished, consumer %v exit", index)
 				return nil
 			}
 
 			err := p.consumeFunc(entry)
 			if err != nil {
-				p.xl.Errorf("consume failed, consumer %v exit, err: %v", index, err)
+				p.l.Errorf("consume failed, consumer %v exit, err: %v", index, err)
 				closeChanSafely(p.fail)
 				return err
 			}

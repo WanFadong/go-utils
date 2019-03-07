@@ -6,10 +6,10 @@ import (
 
 	"path/filepath"
 
-	"qiniu.com/kodo/somewan/utils/tool"
+	"github.com/wanfadong/utils/tool"
 
 	"github.com/golib/assert"
-	"github.com/qiniu/xlog.v1"
+	xlog "github.com/sirupsen/logrus"
 	"qbox.us/errors"
 )
 

@@ -3,7 +3,7 @@ package utils
 import (
 	"strconv"
 
-	"github.com/qiniu/xlog.v1"
+	xlog "github.com/sirupsen/logrus"
 )
 
 func ConvertTo36(xl *xlog.Logger, str10 string) (str36 string, err error) {
