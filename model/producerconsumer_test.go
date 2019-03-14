@@ -6,7 +6,7 @@ import (
 
 	"path/filepath"
 
-	"github.com/wanfadong/utils/tool"
+	"github.com/wanfadong/go-utils/tool"
 
 	"github.com/golib/assert"
 	xlog "github.com/sirupsen/logrus"

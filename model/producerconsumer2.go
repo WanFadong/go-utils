@@ -2,7 +2,7 @@ package model
 
 import (
 	"errors"
-	"github.com/wanfadong/utils"
+	"github.com/wanfadong/go-utils"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -39,7 +39,7 @@ func NewProducerConsumer(produce ProduceFunc, consume ConsumeFunc, num int) (p *
 	buf := make(chan Entry, num)
 	fail := make(chan struct{})
 	p = &ProducerConsumer{
-		l:           logrus.WithField(utils.ReqidKey, "ProducerConsumer"),
+		l:           logrus.WithField(go_utils.ReqidKey, "ProducerConsumer"),
 		produceFunc: produce,
 		consumeFunc: consume,
 		consumerNum: num,

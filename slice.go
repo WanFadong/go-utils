@@ -1,4 +1,4 @@
-package utils
+package go_utils
 
 // IsSliceEqual returns whether slice a is equal to slice b element by element
 func IsSliceEqual(a []byte, b []byte) bool {

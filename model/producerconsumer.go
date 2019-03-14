@@ -8,8 +8,8 @@ import (
 	"os"
 	"strconv"
 	"sync"
-	"github.com/wanfadong/utils"
-	"github.com/wanfadong/utils/tool"
+	"github.com/wanfadong/go-utils"
+	"github.com/wanfadong/go-utils/tool"
 	xlog "github.com/sirupsen/logrus"
 )
 
@@ -207,7 +207,7 @@ func (p *ProducerConsumerRunner) recordMarker() {
 
 	p.xl.Infof("final marker is %v", p.marker)
 	if p.markerFilePath != "" {
-		exists, err := utils.IsFileExists(p.markerFilePath)
+		exists, err := go_utils.IsFileExists(p.markerFilePath)
 		if err != nil {
 			p.xl.Error("get file exists failed", err)
 			return
